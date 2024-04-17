@@ -1,0 +1,127 @@
+-- 1. Display the name of the departments and the name of the projects 
+-- under its control
+
+select departments.Dname, project.Pname
+from departments
+inner join project on departments.Dnum = project.Dnum;
+-------------------------------------------------------------------
+
+-- 2. Display the full data about all the dependence associated with the 
+-- name of the employee they depend on him/her.
+
+select dependent.*,
+employee.Fname 'emp first name', employee.Lname 'emp last name'
+from dependent
+inner join employee on ESSN = SSN;
+-------------------------------------------------------------------
+
+-- 3. Display the Projects full data of the projects with a name starts with 
+-- "a" letter.
+
+select *
+from project
+where project.Pname like 'a%';
+-------------------------------------------------------------------
+
+-- 4. display all the employees in department 30 whose salary from 1000 to 
+-- 2000 LE monthly
+
+select *
+from employee
+where employee.DNO = 30 and employee.Salary>=1000 and employee.Salary <= 2000;
+-------------------------------------------------------------------
+
+-- 5. Retrieve the names of all employees in department 10 who works 
+-- more than or equal 10 hours per week on "AL Rabwah" project
+
+select employee.Fname 'emp first name', employee.Lname 'emp last name'
+from employee
+inner join works_for on employee.SSN = works_for.Essn
+inner join project on works_for.Pno = project.Pnumber
+where employee.DNO = 10 and works_for.hours >= 10 and project.Pname = 'AL Rabwah';
+-------------------------------------------------------------------
+
+-- 6. For each project, list the project name and the total hours per week 
+-- (for all employees) spent on that project.
+
+select project.Pname, sum(works_for.hours)
+from project
+inner join works_for on project.Pnumber = works_for.Pno
+group by project.Pname;
+-------------------------------------------------------------------
+
+-- 7. Retrieve the names of all employees and the names of the projects 
+-- they are working on, sorted by the project name.
+
+select employee.Fname, employee.Lname, project.Pname
+from employee
+inner join works_for on employee.SSN = works_for.ESSN
+inner join project on works_for.Pno = project.Pnumber;
+-------------------------------------------------------------------
+
+-- 8. Display the data of the department which has the smallest employee 
+-- ID over all employees' ID 
+
+select departments.*, employee.SSN
+from departments
+inner join employee on departments.Dnum = employee.DNO
+order by employee.SSN limit 1;
+-------------------------------------------------------------------
+
+-- 9. For each department, retrieve the department name and the maximum, 
+-- minimum and average salary of its employees
+
+select departments.Dname, max(employee.Salary), min(employee.salary), avg(employee.Salary)
+from departments
+inner join employee on departments.Dnum = employee.DNO
+group by departments.Dname;
+-------------------------------------------------------------------
+
+-- 10.List the last name of all managers who have no dependents.
+
+select employee.Lname, departments.MGRSSN
+from employee
+inner join departments on employee.SSN = departments.MGRSSN
+left join dependent on departments.MGRSSN = dependent.ESSN
+where Dependent_name is null;
+-------------------------------------------------------------------
+
+-- 11.For each department-- if its average salary is less than the average 
+-- salary of all employees-- display its number, name and number of its
+-- employees.
+
+select avg(employee.Salary) emp_avr_sal, departments.Dnum, departments.Dname, count(employee.Salary)
+from employee
+inner join departments on employee.DNO = departments.Dnum
+group by departments.Dnum
+order by emp_avr_sal limit 1;
+-------------------------------------------------------------------
+
+-- 12.Retrieve a list of employees and the projects they are working on 
+-- ordered by department and within each department, ordered 
+-- alphabetically by last name, first name
+
+select employee.Lname, employee.Fname, works_for.Pno, departments.Dname
+from employee
+inner join works_for on employee.SSN = works_for.Essn
+inner join departments on employee.DNO = departments.Dnum
+order by employee.DNO, employee.Lname, employee.Lname;
+-------------------------------------------------------------------
+
+-- 13.For each project located in Cairo, find the project number, the 
+-- controlling department name, the department manager last name,
+-- address and birthdate
+
+select project.Pnumber, departments.Dname, employee.Lname, employee.Address, employee.Bdate
+from project
+inner join departments on project.Dnum = departments.Dnum
+inner join employee on departments.MGRSSN = employee.SSN
+where project.City = 'cairo'
+
+
+
+
+
+
+
+
